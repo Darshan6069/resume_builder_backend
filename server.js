@@ -15,5 +15,4 @@ mongoose
   .then(() => console.log("mongodb connected to resume_builder"))
   .catch((err) => console.log("mongo error at resume_builder"));
 
-// const User = mongoose.model("resume_builder", userSchema);
 
