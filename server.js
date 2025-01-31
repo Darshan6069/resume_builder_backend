@@ -1,18 +1,18 @@
+const { mongoDbConnection } = require("./views/mongodb_connection");
 const express = require("express");
-const fs = require('fs');
-const mongoose = require("mongoose");
 const cors = require("cors");
-const jwt = require("jsonwebtoken");
-
-
 const app = express();
+mongoDbConnection("mongodb://localhost:27017/resume_builder");
 app.use(cors());
+
 const port = 3070;
 
+app.use(express.urlencoded({ extended: false }));
+
+app.use("/api/auth", authRoutes);
+
 //Connection
-mongoose
-  .connect("mongodb://localhost:27017/resume_builder")
-  .then(() => console.log("mongodb connected to resume_builder"))
-  .catch((err) => console.log("mongo error at resume_builder"));
-
-
+connect;
+app.listen(port, "192.168.137.67", () =>
+  console.log(`Server started at port ${port}`)
+);

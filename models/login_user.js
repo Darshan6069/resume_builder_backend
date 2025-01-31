@@ -3,7 +3,6 @@ const CryptoJS = require("crypto-js");
 const jwt = require("jsonwebtoken");
 const user = require("../models/login_user")
 
-
 const LoginUserSchema = new mongoose.Schema(
   {
   email: { type: String,require: true },
