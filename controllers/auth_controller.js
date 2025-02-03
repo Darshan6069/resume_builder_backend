@@ -1,6 +1,6 @@
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const User = require("../models/auth_model/registration_modle");
+const User = require("../models/user_schema");
 
 exports.register = async (req, res) => {
   const { user_name, email, password, phone } = req.body;
@@ -29,16 +29,22 @@ exports.register = async (req, res) => {
       password: hashedPassword,
       phone,
     });
+
     await newUser.save();
-    res
-      .status(201)
-      .json({ success: true, msg: "User registered successfully." });
+
+    return res.status(201).json({
+      success: true,
+      msg: "User registered successfully.",
+    });
   } catch (error) {
-    res
-      .status(500)
-      .json({ success: false, msg: "Registration failed. Try again." });
+    console.error("Error during registration:", error);
+    return res.status(500).json({
+      success: false,
+      msg: "Internal server error.",
+    });
   }
 };
+
 
 exports.login = async (req, res) => {
   const { email, password } = req.body;

@@ -1,12 +1,14 @@
 const express = require("express");
 const router = express.Router();
-const personalInfoController = require("../controllers/user_controller");
-const verifyToken = require("../middleware/middlewares");
+const userController = require("../controllers/user_controller");
+// const { addPersonalInfo } = require("../controllers/user_controller");
+// const verifyToken = require("../middleware/middlewares");
 
 router.post(
   "/personal-info",
-  verifyToken,
-  personalInfoController.createPersonalInfo
+  userController.addPersonalInfo
+  // verifyToken,
+  // personalInfoController.createPersonalInfo
 );
 
 module.exports = router;
