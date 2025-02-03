@@ -160,6 +160,8 @@
 //   console.log(`Server started at http://192.168.137.67:${port}`)
 // );
 
+
+
 const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
@@ -182,8 +184,9 @@ const authRoutes = require("./routes/auth_routes");
 const personalInfoRoutes = require("./routes/user_routes");
 
 app.use("/api/auth", authRoutes);
-app.use("/api", personalInfoRoutes);
+app.use("/api",personalInfoRoutes);
 
-app.listen(port, "192.168.1.15", () =>
+
+app.listen(port, "192.168.113.67", () =>
   console.log(`Server started at http://192.168.1.15:${port}`)
 );
