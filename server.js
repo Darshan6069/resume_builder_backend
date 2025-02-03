@@ -3,6 +3,10 @@ const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
+const {verifyToken} = require('./middleware/middlewares');
+const PersonalInfo = require('./models/personal_info');
+const User = require("./models/registration_modle")
 
 const app = express();
 const port = 8000;
@@ -17,15 +21,15 @@ mongoose
   .catch((err) => console.error("MongoDB connection error:", err));
 
 // User Schema
-const userSchema = new mongoose.Schema({
-  user_name: { type: String, required: true },
-  email: { type: String, required: true, unique: true },
-  password: { type: String, required: true },
-  phone: { type: String, required: true, unique: true },
-  created_at: { type: Date, default: Date.now },
-});
+// const userSchema = new mongoose.Schema({
+//   user_name: { type: String, required: true },
+//   email: { type: String, required: true, unique: true },
+//   password: { type: String, required: true },
+//   phone: { type: String, required: true, unique: true },
+//   created_at: { type: Date, default: Date.now },
+// });
 
-const User = mongoose.model("User", userSchema);
+// const User = mongoose.model("User", userSchema);
 
 // API to check if email or phone exists
 app.post("/check-user", async (req, res) => {
@@ -74,6 +78,94 @@ app.post("/register", async (req, res) => {
 });
 
 
-app.listen(port, "192.168.70.224", () =>
-  console.log(`Server started at http://192.168.70.224:${port}`)
+app.post("/login", async (req, res) => {
+  const {email, password } = req.body;
+
+  if (!email || !password) {
+    return res
+      .status(400)
+      .json({ success: false, msg: "All fields are required." });
+  }
+
+  try {
+    const existingUser = await User.findOne({ email });
+
+    if (!existingUser) {
+      return res
+        .status(404)
+        .json({ success: false, msg: "not found !" });
+    }
+
+    const dbPassword =  existingUser.get("password");
+    const isSame = await bcrypt.compare(password, dbPassword);
+      if(!isSame){
+      return res
+        .status(403)
+        .json({ success: false, msg: "unauthorized" });
+    }
+
+     const token = jwt.sign({id:existingUser.id, email:existingUser.email},
+      'secret-key',{expiresIn:'1h'}); 
+    return res
+      .status(201)
+      .json({ success: true, msg: "User logged in." ,token});
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ success: false, msg: "Registration failed. Try again." });
+  }
+});
+
+app.post("/personal-info", async (req, res) => {
+  const { firstname, lastname, email, phone, jobTitle, address, links } =
+    req.body;
+
+  if (
+    !firstname ||
+    !lastname ||
+    !email ||
+    !phone ||
+    !jobTitle ||
+    !address ||
+    !links
+  ) {
+    return res
+      .status(400)
+      .json({ success: false, msg: "All fields are required." });
+  }
+
+  try {
+    const newPersonalInfo = {
+      firstname,
+      lastname,
+      email,
+      phone,
+      jobTitle,
+      address,
+      links,
+    };
+    const udpated =  await User.updateOne({ email: email }, { personal_info: newPersonalInfo });
+    // const savedPersonalInfo = await newPersonalInfo.save();
+    res
+      .status(201)
+      .json({ 
+        success: true,
+        msg: "Personal info created successfully.",
+        data: udpated,
+      });
+  } catch (error) {
+    res
+      .status(500)
+      .json({ success: false, msg: "Failed to create personal info.", error });
+  }
+});
+
+
+app.get('/valid', verifyToken,(req,res)=>{
+  res.json();
+});
+
+
+app.listen(port, "192.168.137.67", () =>
+  console.log(`Server started at http://192.168.137.67:${port}`)
 );
