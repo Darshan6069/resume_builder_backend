@@ -164,7 +164,7 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 const { mongoDbConnection } = require("./views/mongodb_connection");
-
+  
 const app = express();
 const port = 8000;
 
@@ -184,6 +184,6 @@ const personalInfoRoutes = require("./routes/user_routes");
 app.use("/api/auth", authRoutes);
 app.use("/api", personalInfoRoutes);
 
-app.listen(port, "192.168.1.15", () =>
-  console.log(`Server started at http://192.168.1.15:${port}`)
+app.listen(port, "192.168.1.13", () =>
+  console.log(`Server started at http://192.168.1.13:${port}`)
 );
