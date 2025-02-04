@@ -56,18 +56,10 @@
 const User = require("../models/user_schema");
 
 const addPersonalInfo = async (req, res) => {
-  const { firstname, lastname, email, phone, jobTitle, address, links } =
+  const { firstname, lastname, phone, email, jobTitle, address, links } =
     req.body;
 
-  if (
-    !firstname ||
-    !lastname ||
-    !email ||
-    !phone ||
-    !jobTitle ||
-    !address ||
-    !links
-  ) {
+  if (!firstname || !lastname || !email || !phone || !jobTitle || !address || !links) {
     return res
       .status(400)
       .json({ success: false, msg: "All fields are required." });
@@ -85,7 +77,7 @@ const addPersonalInfo = async (req, res) => {
     };
 
     const updated = await User.updateOne(
-      { email: email },
+      { _id: req.user.id },
       { personal_info: newPersonalInfo }
     );
 
