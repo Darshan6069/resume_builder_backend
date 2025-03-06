@@ -7,5 +7,4 @@ const DeclarationSchema = new mongoose.Schema(
   { timestamps: true } // Automatically adds createdAt and updatedAt fields
 );
 
-// const Declaration = mongoose.model("Declaration", DeclarationSchema);
 module.exports = DeclarationSchema;
