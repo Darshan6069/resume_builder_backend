@@ -9,6 +9,9 @@ const ProjectSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
+const ProjectMasterSchema = new mongoose.Schema({
+  projectList: { type: [ProjectSchema], required: true },
+});
 
 // const Project = mongoose.model("Project", ProjectSchema);
-module.exports = ProjectSchema;
+module.exports = ProjectMasterSchema;
