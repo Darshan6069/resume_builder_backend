@@ -26,6 +26,6 @@ app.use("/api/auth", authRoutes);
 app.use("/api", userRoutes);
 
 // app.listen(port, "192.168.1.27", () =>
-  app.listen(port, "192.168.143.67", () =>
+  app.listen(port, "192.168.1.45", () =>
     console.log(`Server started at http://192.168.149.67:${port}`)
   );

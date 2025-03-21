@@ -281,7 +281,38 @@ const addAchievementInfo = async (req, res) => {
   }
 };
 
+const addSkillsInfo = async (req, res) => {
+  const { categories, selectedCategories } = req.body;
 
+  if (!categories || typeof categories !== "object" || !selectedCategories) {
+    return res.status(400).json({
+      success: false,
+      msg: "Categories and selectedCategories are required and should be valid.",
+    });
+  }
+
+  try {
+    const updated = await User.updateOne(
+      { _id: req.user.id },
+      { $set: { skills_info: { categories, selectedCategories } } }
+    );
+
+    if (updated.nModified === 0) {
+      return res.status(404).json({ success: false, msg: "User not found." });
+    }
+
+    res.status(201).json({
+      success: true,
+      msg: "Skills info added successfully.",
+      data: updated,
+    });
+  } catch (error) {
+    console.error("Error adding skills info:", error);
+    res
+      .status(500)
+      .json({ success: false, msg: "Failed to add skills info.", error });
+  }
+};
 
 module.exports = {
   addPersonalInfo,
@@ -289,7 +320,9 @@ module.exports = {
   addExperienceInfo,
   addProjectInfo,
   addAchievementInfo,
+  addSkillsInfo,
 };
+
 
 // const User = require("../models/user_schema");
 
