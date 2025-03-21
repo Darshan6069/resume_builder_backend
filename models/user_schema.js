@@ -5,6 +5,7 @@ const ExperienceMasterSchema = require("./experience_model/experience_model");
 const ProjectMasterSchema = require("./project_model/project_model");
 const AchievementMasterSchema = require("./achievement_model/achievement_model");
 const SkillsSchema = require("./skill_set_model/skill_set_model");
+const DeclarationSchema = require("./declaration_model/declaration_model");
 
 const UserSchema = new mongoose.Schema({
   user_name: { type: String, required: true },
@@ -18,6 +19,7 @@ const UserSchema = new mongoose.Schema({
   project_info: ProjectMasterSchema,
   achievement_info: AchievementMasterSchema,
   skills_info: SkillsSchema,
+  declaration_info: DeclarationSchema,
 });
 
 const User = mongoose.model("registration_models", UserSchema);

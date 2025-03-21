@@ -314,6 +314,39 @@ const addSkillsInfo = async (req, res) => {
   }
 };
 
+const addDeclarationInfo = async (req, res) => {
+  const { honorAwardTitle } = req.body;
+
+  if (!honorAwardTitle) {
+    return res.status(400).json({
+      success: false,
+      msg: "Honor or award title is required.",
+    });
+  }
+
+  try {
+    const updated = await User.updateOne(
+      { _id: req.user.id },
+      { $set: { "declaration_info.honorAwardTitle": honorAwardTitle } }
+    );
+
+    if (updated.nModified === 0) {
+      return res.status(404).json({ success: false, msg: "User not found." });
+    }
+
+    res.status(201).json({
+      success: true,
+      msg: "Declaration info added successfully.",
+      data: updated,
+    });
+  } catch (error) {
+    console.error("Error adding declaration info:", error);
+    res
+      .status(500)
+      .json({ success: false, msg: "Failed to add declaration info.", error });
+  }
+};
+
 module.exports = {
   addPersonalInfo,
   addEducationInfo,
@@ -321,6 +354,7 @@ module.exports = {
   addProjectInfo,
   addAchievementInfo,
   addSkillsInfo,
+  addDeclarationInfo,
 };
 
 
