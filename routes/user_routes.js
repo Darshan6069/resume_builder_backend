@@ -7,4 +7,6 @@ router.post("/education_info", verifyToken, userController.addEducationInfo);
 router.post("/experience_info", verifyToken, userController.addExperienceInfo);
 router.post("/project_info", verifyToken, userController.addProjectInfo);
 router.post("/achievement_info", verifyToken, userController.addAchievementInfo);
+router.post("/skillset", verifyToken, userController.addSkillsInfo);
+
 module.exports = router;

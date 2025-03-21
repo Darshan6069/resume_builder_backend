@@ -9,8 +9,6 @@ const SkillsSchema = new mongoose.Schema(
     },
     selectedCategories: { type: String, required: true }, // Selected skill category
   },
-  { timestamps: true }
 );
 
-// const Skills = mongoose.model("Skills", SkillsSchema);
 module.exports = SkillsSchema;
