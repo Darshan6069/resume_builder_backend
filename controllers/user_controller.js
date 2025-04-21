@@ -281,69 +281,91 @@ const addAchievementInfo = async (req, res) => {
   }
 };
 
+// route: POST /api/skills
 const addSkillsInfo = async (req, res) => {
-  const { categories, selectedCategories } = req.body;
+  const { skills_info } = req.body;
 
-  if (!categories || typeof categories !== "object" || !selectedCategories) {
+  if (!skills_info || typeof skills_info !== "object") {
     return res.status(400).json({
       success: false,
-      msg: "Categories and selectedCategories are required and should be valid.",
+      msg: "skills_info object is required.",
     });
   }
 
   try {
-    const updated = await User.updateOne(
-      { _id: req.user.id },
-      { $set: { skills_info: { categories, selectedCategories } } }
+    const updated = await User.findByIdAndUpdate(
+      req.user.id,
+      {
+        $set: { skills_info }, // ✅ key matches schema
+      },
+      { new: true }
     );
 
-    if (updated.nModified === 0) {
+    if (!updated) {
       return res.status(404).json({ success: false, msg: "User not found." });
     }
 
     res.status(201).json({
       success: true,
-      msg: "Skills info added successfully.",
-      data: updated,
+      msg: "Skills info updated successfully.",
+      data: updated.skills_info,
     });
   } catch (error) {
-    console.error("Error adding skills info:", error);
-    res
-      .status(500)
-      .json({ success: false, msg: "Failed to add skills info.", error });
+    console.error("Error saving skills info:", error);
+    res.status(500).json({
+      success: false,
+      msg: "Internal server error.",
+      error,
+    });
   }
 };
 
 const addDeclarationInfo = async (req, res) => {
-  const { honorAwardTitle } = req.body;
+  const { declaration_info } = req.body;
 
-  if (!honorAwardTitle) {
+  if (
+    !declaration_info ||
+    !Array.isArray(declaration_info) ||
+    declaration_info.length === 0
+  ) {
     return res.status(400).json({
       success: false,
-      msg: "Honor or award title is required.",
+      msg: "Declaration info is required and should be a non-empty array.",
     });
   }
 
   try {
-    const updated = await User.updateOne(
-      { _id: req.user.id },
-      { $set: { "declaration_info.honorAwardTitle": honorAwardTitle } }
+    const user = await User.findById(req.user.id);
+    if (!user) {
+      return res.status(404).json({ success: false, msg: "User not found." });
+    }
+
+    const updatedUser = await User.findByIdAndUpdate(
+      req.user.id,
+      {
+        $push: {
+          declaration_info: { $each: declaration_info },
+        },
+      },
+      { new: true }
     );
 
-    if (updated.nModified === 0) {
+    if (!updatedUser) {
       return res.status(404).json({ success: false, msg: "User not found." });
     }
 
     res.status(201).json({
       success: true,
       msg: "Declaration info added successfully.",
-      data: updated,
+      data: updatedUser,
     });
   } catch (error) {
     console.error("Error adding declaration info:", error);
-    res
-      .status(500)
-      .json({ success: false, msg: "Failed to add declaration info.", error });
+    res.status(500).json({
+      success: false,
+      msg: "Failed to add declaration info.",
+      error: error.message || error,
+    });
   }
 };
 
